@@ -1,0 +1,23 @@
+use std::env;
+use std::process;
+
+use minigrep::Config;
+
+fn main() {
+    // args func will give us an iterator over arguments passed into a program 
+    // collect function will turn that iterator into a collection
+    let args: Vec<String> = env::args().collect();
+    // closure
+    let config = Config::new(&args).unwrap_or_else(|err| {
+        eprintln!("Problem parsing arguments: {}", err);
+        process::exit(1);
+    });
+
+    println!("Searching for {}", config.query);
+    println!("In file {}", config.filename);
+
+    if let Err(e) = minigrep::run(config) {
+        eprintln!("Application error: {}", e);
+        process::exit(1);
+    }
+}
